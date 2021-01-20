@@ -1,0 +1,12 @@
+.todo {
+  margin-bottom: 1rem;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

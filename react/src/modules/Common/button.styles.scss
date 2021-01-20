@@ -1,0 +1,26 @@
+.button {
+  padding: 0.5rem 0.75rem;
+  color: inherit;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  &-default {
+    @extend .button;
+
+    background-color: #2b2b2b;
+  }
+
+  &-primary {
+    @extend .button;
+
+    background-color: #ffffff;
+  }
+
+  &-secondary {
+    @extend .button;
+
+    background-color: #505050;
+  }
+}

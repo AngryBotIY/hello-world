@@ -1,0 +1,20 @@
+{
+  "name": "react",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "parcel serve ./src/index.html -d ./serve",
+    "build": "parcel build ./src/index.html -d ./build --no-cache --no-source-maps --public-url ./"
+  },
+  "dependencies": {
+    "nanoid": "^3.1.20",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4",
+    "sass": "^1.32.5"
+  }
+}
