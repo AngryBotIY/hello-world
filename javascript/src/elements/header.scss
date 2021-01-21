@@ -1,0 +1,14 @@
+.content {
+  margin: 0 auto;
+  max-width: 1440px;
+}
+
+.header {
+  @extend .content;
+
+  margin-bottom: 1rem;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  background-color: #505050;
+  border-radius: 0 0 1rem 1rem;
+}
