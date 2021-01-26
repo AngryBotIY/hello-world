@@ -46,7 +46,8 @@ const clearFrame = (ctx) => ctx.clearRect(0, 0, CNV.w, CNV.h)
 const moveShake = (value, ctx) => ctx.fillRect(value * 5, 50, 50, 50)
 
 time$.subscribe((value) => {
-  RENDERER.game.renderEach(clearFrame)
-
-  RENDERER.game.renderEach(moveShake.bind(null, value))
+  RENDERER.game.renderEach((ctx) => {
+    clearFrame(ctx)
+    moveShake.call(null, value, ctx)
+  })
 })
