@@ -1,19 +1,16 @@
-import { fromEvent, interval, combineLatest } from 'rxjs'
-import { map, distinctUntilChanged } from 'rxjs/operators'
-
 import { range } from './lib/helpers'
+import { Renderer } from './lib/Renderer'
 import { Tile } from './lib/Tile'
-
+import { ctxGrid, ctxGame, CNV } from './lib/canvas'
 import { time$ } from './lib/time'
 
-const canvas = document.querySelector('.canvas')
-export const context = canvas.getContext('2d')
-
-canvas.width = window.innerWidth / 2
-canvas.height = window.innerHeight
+const RENDERER = {
+  grid: new Renderer(ctxGrid),
+  game: new Renderer(ctxGame)
+}
 
 const TILE = {
-  size: Math.round(canvas.width / 20),
+  size: 50,
   get width() {
     return this.size
   },
@@ -22,18 +19,34 @@ const TILE = {
   }
 }
 
-const FIELD = {
-  width: canvas.width,
-  height: canvas.height
+const TILES = {
+  count: {
+    x: Math.round(CNV.w / TILE.size),
+    y: Math.round(CNV.h / TILE.size)
+  },
+  objects() {
+    return range(this.count.y).map((vY, iY) =>
+      range(this.count.x).map((vX, iX) => new Tile(TILE.size * iX, TILE.size * iY, TILE.size, TILE.size))
+    )
+  }
 }
 
-const TILES_COUNT = {
-  x: Math.round(FIELD.width / TILE.size),
-  y: Math.round(FIELD.height / TILE.size)
-}
-
-const TILES = range(TILES_COUNT.y).map((vY, iY) =>
-  range(TILES_COUNT.x).map((vX, iX) => new Tile(TILE.size * iX, TILE.size * iY, TILE.size))
+TILES.objects().forEach((row) =>
+  row.forEach((tile) =>
+    RENDERER.grid.renderOnce((ctx) => {
+      ctx.strokeStyle = '#2b2b2b'
+      ctx.lineWidth = 1
+      ctx.strokeRect(tile.x, tile.y, tile.width, tile.height)
+    })
+  )
 )
 
-TILES.forEach((row) => row.forEach((tile) => tile.draw()))
+const clearFrame = (ctx) => ctx.clearRect(0, 0, CNV.w, CNV.h)
+
+const moveShake = (value, ctx) => ctx.fillRect(value * 5, 50, 50, 50)
+
+time$.subscribe((value) => {
+  RENDERER.game.renderEach(clearFrame)
+
+  RENDERER.game.renderEach(moveShake.bind(null, value))
+})
