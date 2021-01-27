@@ -26,4 +26,4 @@ const [x$, y$] = partition(fromEvent(document, 'keydown').pipe(filter(isArrowKey
 
 const control$ = merge(x$, y$).pipe(distinctUntilChanged(isOpposite), distinctUntilKeyChanged('key'))
 
-export { control$ }
+export { control$, KEY }

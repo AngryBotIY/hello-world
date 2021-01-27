@@ -1,9 +1,4 @@
 import { CNV } from './canvas'
-class BaseRenderer {
-  static render(...fn) {
-    fn.forEach((f) => requestAnimationFrame(f))
-  }
-}
 
 class Renderer {
   constructor(ctx) {
@@ -23,4 +18,4 @@ class Renderer {
   }
 }
 
-export { BaseRenderer, Renderer }
+export { Renderer }

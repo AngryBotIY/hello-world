@@ -2,15 +2,17 @@ import { range } from './lib/helpers'
 import { Renderer } from './lib/Renderer'
 import { Tile } from './lib/Tile'
 import { ctxGrid, ctxGame, CNV } from './lib/canvas'
+import { KEY } from './lib/control'
 import { time$ } from './lib/time'
 import { control$ } from './lib/control'
+import { combineLatest } from 'rxjs'
 
 const RENDERER = {
   grid: new Renderer(ctxGrid),
   game: new Renderer(ctxGame)
 }
 
-const TILE = { size: 50 }
+const TILE = { size: 25 }
 
 const TILES = {
   count: {
@@ -19,34 +21,50 @@ const TILES = {
   },
   get objects() {
     return range(this.count.y).map((vY, iY) =>
-      range(this.count.x).map(
-        (vX, iX) => new Tile(TILE.size * iX, TILE.size * iY, TILE.size, TILE.size)
-      )
+      range(this.count.x).map((vX, iX) => new Tile(TILE.size * iX, TILE.size * iY, TILE.size, TILE.size))
     )
   }
 }
 
 TILES.objects.forEach((row) =>
-  row.forEach((tile) =>
+  row.forEach(({ x, y, width, height }) =>
     RENDERER.grid.renderOnce((ctx) => {
-      ctx.strokeStyle = '#2b2b2b'
-      ctx.lineWidth = 1
-      ctx.strokeRect(tile.x, tile.y, tile.size, tile.size)
+      ctx.fillStyle = '#2b2b2b'
+      ctx.fillRect(x, y, width, height)
     })
   )
 )
 
 const SNAKE = {
-  up: 0,
-  right: 5,
-  down: 0,
-  left: 0
+  x: 0,
+  y: 0,
+  speed: TILE.size / 5
 }
 
-const moveSnake = (value, ctx) => ctx.fillRect(value * 5, 50, 50, 50)
+const drawSnake = (x, y, ctx) => ctx.fillRect(x, y, TILE.size, TILE.size)
 
-time$.subscribe((value) => {
-  RENDERER.game.renderEach((ctx) => moveSnake(value, ctx))
+const moveSnake = (x, y) =>
+  RENDERER.game.renderEach((ctx) => {
+    SNAKE.x = x
+    SNAKE.y = y
+
+    drawSnake(x, y, ctx)
+  })
+
+const game$ = combineLatest([time$, control$]).subscribe((values) => {
+  const time = values[0]
+  const control = values[1]
+
+  switch (control.key) {
+    case KEY.Up:
+      return moveSnake(SNAKE.x, SNAKE.y - SNAKE.speed)
+    case KEY.Right:
+      return moveSnake(SNAKE.x + SNAKE.speed, SNAKE.y)
+    case KEY.Down:
+      return moveSnake(SNAKE.x, SNAKE.y + SNAKE.speed)
+    case KEY.Left:
+      return moveSnake(SNAKE.x - SNAKE.speed, SNAKE.y)
+    default:
+      return moveSnake(SNAKE.x + SNAKE.speed, SNAKE.y)
+  }
 })
-
-control$.subscribe((value) => console.log('OUT', value))
