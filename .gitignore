@@ -2,3 +2,6 @@
 */yarn.lock
 */.cache
 */serve
+
+# purescript
+/purescript/*/**/*.dhall
