@@ -3,7 +3,7 @@ module Chapter.Three where
 import Prelude
 
 import Control.Plus (empty)
-import Data.List (List(..), Cons, filter, head, insert, nubBy)
+import Data.List (List(..), filter, head, nubBy)
 import Data.Maybe (Maybe)
 
 -- functions
@@ -26,11 +26,11 @@ type Entry = { firstName :: String, lastName ::String, address :: Address }
 
 type AddressBook = List Entry
 
-emptyBook :: AddressBook
-emptyBook = empty
+book :: AddressBook
+book = empty
 
 insertEntry :: Entry -> AddressBook -> AddressBook
-insertEntry entry = insert entry
+insertEntry = Cons
 
 findEntry :: String -> String -> AddressBook -> Maybe Entry
 findEntry firstName lastName = head <<< filter filterEntry
@@ -51,10 +51,10 @@ findEntryByName firstName = head <<< filter filterEntry
     filterEntry entry = entry.firstName == firstName
 
 removeDuplicates :: AddressBook -> AddressBook
-removeDuplicates = nubBy filterEntry
+removeDuplicates = nubBy removeEntry
   where
-    filterEntry :: Entry -> Entry -> Boolean
-    filterEntry prev next = prev.firstName == next.firstName
+    removeEntry :: Entry -> Entry -> Boolean
+    removeEntry prev next = prev.firstName == next.firstName
 
 showEntry :: Entry -> String
 showEntry entry =
